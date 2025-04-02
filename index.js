@@ -26,7 +26,6 @@ app.get('/', (req, res) => {
 });
 
 app.post("/signup",async(req,res)=>{
-  console.log(req.bo)
   const {username,email,password}=req.body
 
   try {
@@ -49,36 +48,36 @@ app.post("/signup",async(req,res)=>{
       await newuser.save()
       res.status(200).json({ status: true, message: "registration sucessfull" })
     })
-
-    app.post("/login",async(req,res)=>{
-      const {email,password}=req.body;
-      try {
-        if(!email || !password){
-          res.status(400).json({ status: true, message: "All feilds requrieded" })
-        }
-        let user=await UserModel.findOne({email})
-        if(!user){
-          res.status(400).json({ status: true, message: "Please signup" })
-        }
-        await bcrypt.compare(password,user.password,function(err,result){
-          if(err){
-            res.status(500).json({ status: true, message: "Internal Server error" })
-          }
-          if(!result){
-            res.status(400).json({ status: true, message: "password is incorret" });
-          }
-          res.status(200).json({ status: true, message: "Login sucessfull" })
-        })
-        
-      } catch (error) {
-        
-      }
-    })
-
   } catch (error) {
     console.log(error)
   }
 })
+
+app.post("/login",async(req,res)=>{
+  const {email,password}=req.body;
+  try {
+    if(!email || !password){
+      res.status(400).json({ status: true, message: "All feilds requrieded" })
+    }
+    let user=await UserModel.findOne({email})
+    if(!user){
+      res.status(400).json({ status: true, message: "Please signup" })
+    }
+    await bcrypt.compare(password,user.password,function(err,result){
+      if(err){
+        res.status(500).json({ status: true, message: "Internal Server error" })
+      }
+      if(!result){
+        res.status(400).json({ status: true, message: "password is incorret" });
+      }
+      res.status(200).json({ status: true, message: "Login sucessfull" })
+    })
+    
+  } catch (error) {
+      console.log(error)
+  }
+})
+
 
 
 
