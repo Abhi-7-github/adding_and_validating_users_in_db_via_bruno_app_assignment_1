@@ -50,11 +50,37 @@ app.post("/signup",async(req,res)=>{
       res.status(200).json({ status: true, message: "registration sucessfull" })
     })
 
+    app.post("/login",async(req,res)=>{
+      const {email,password}=req.body;
+      try {
+        if(!email || !password){
+          res.status(400).json({ status: true, message: "All feilds requrieded" })
+        }
+        let user=await UserModel.findOne({email})
+        if(!user){
+          res.status(400).json({ status: true, message: "Please signup" })
+        }
+        await bcrypt.compare(password,user.password,function(err,result){
+          if(err){
+            res.status(500).json({ status: true, message: "Internal Server error" })
+          }
+          if(!result){
+            res.status(400).json({ status: true, message: "password is incorret" });
+          }
+          res.status(200).json({ status: true, message: "Login sucessfull" })
+        })
+        
+      } catch (error) {
+        
+      }
+    })
 
   } catch (error) {
-    
+    console.log(error)
   }
 })
+
+
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
